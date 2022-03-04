@@ -2819,6 +2819,44 @@ func @depthwise_conv(%arg0: tensor<2x4x5x2xf32>,
 
 // -----
 
+func @depthwise_conv_padding_test(%arg0: tensor<2x4x5x2xf32>,
+                     %arg1: tensor<2x2x2x3xf32>) -> tensor<2x3x4x6xf32> {
+  %0 = "mhlo.convolution"(%arg0, %arg1) {
+    batch_group_count = 1 : i64,
+    dimension_numbers = #mhlo.conv<raw
+      input_batch_dimension = 0,
+      input_feature_dimension = 3,
+      input_spatial_dimensions = [1, 2],
+      kernel_input_feature_dimension = 2,
+      kernel_output_feature_dimension = 3,
+      kernel_spatial_dimensions = [0, 1],
+      output_batch_dimension = 0,
+      output_feature_dimension = 3,
+      output_spatial_dimensions = [1, 2]
+    >,
+    feature_group_count = 2 : i64,
+    padding = dense<0> : tensor<2x2xi64>,
+    rhs_dilation = dense<1> : tensor<2xi64>,
+    window_strides = dense<1> : tensor<2xi64>,
+    someattr} : (tensor<2x4x5x2xf32>, tensor<2x2x2x3xf32>) -> tensor<2x3x4x6xf32>
+  return %0 : tensor<2x3x4x6xf32>
+}
+// CHECK:      func @depthwise_conv_padding_test
+// CHECK-SAME:   %[[IN:[a-zA-Z0-9_]*]]
+// CHECK-SAME:   %[[FILTER:[a-zA-Z0-9_]*]]
+// CHECK:        %[[INIT:.+]] = linalg.init_tensor [2, 3, 4, 2, 3] : tensor<2x3x4x2x3xf32>
+// CHECK:        %[[CST:.+]] = arith.constant 0.000000e+00 : f32
+// CHECK:        %[[FILL:.+]] = linalg.fill(%[[CST]], %[[INIT]]) : f32, tensor<2x3x4x2x3xf32> -> tensor<2x3x4x2x3xf32>
+// CHECK:        %[[OUT:.+]] = linalg.depthwise_conv_2d_nhwc_hwcm
+// CHECK-SAME:     {dilations = dense<1> : tensor<2xi64>, someattr, strides = dense<1> : tensor<2xi64>}
+// CHECK-SAME:     ins(%[[IN]], %[[FILTER]] : tensor<2x4x5x2xf32>, tensor<2x2x2x3xf32>)
+// CHECK-SAME:     outs(%[[FILL]] : tensor<2x3x4x2x3xf32>) -> tensor<2x3x4x2x3xf32>
+// CHECK:        %{{.+}} = tensor.collapse_shape %[[OUT]]
+// CHECK-SAME:     [0], [1], [2], [3, 4]
+// CHECK-SAME:     : tensor<2x3x4x2x3xf32> into tensor<2x3x4x6xf32>
+
+// -----
+
 func @depthwise_conv_multiplier_1(%arg0: tensor<1x113x113x96xf32>,
                                   %arg1: tensor<3x3x1x96xf32>) -> tensor<1x56x56x96xf32> {
   %0 = "mhlo.convolution"(%arg0, %arg1) {
