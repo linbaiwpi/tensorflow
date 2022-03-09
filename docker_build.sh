@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# run the following command before running this script
+# docker run -it -v <PATH TO tensorflowON YOUR MACHINE>:/tensorflow --name tflite_soc_v0 ubuntu:20.04 /bin/bash
+# cd /tensorflow && ./docker_build.sh
+
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
@@ -40,5 +45,6 @@ echo '=========> python -m pip install numpy'
 pip install numpy
 
 #yes "" | ./configure; python -c "import numpy as np"
+apt-get install gdb -y
 
-cd /
+cd /tensorflow
