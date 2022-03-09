@@ -450,8 +450,8 @@ def tflite_custom_android_library(
         deps = [],
         custom_package = "org.tensorflow.lite",
         visibility = ["//visibility:private"],
-        include_xnnpack_delegate = True,
-        include_nnapi_delegate = True):
+        include_xnnpack_delegate = False,
+        include_nnapi_delegate = False):
     """Generates a tflite Android library, stripping off unused operators.
 
     Note that due to a limitation in the JNI Java wrapper, the compiled TfLite shared binary

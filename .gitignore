@@ -12,7 +12,9 @@ node_modules
 *.pyc
 __pycache__
 *.swp
-.vscode/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
 cmake_build/
 tensorflow/contrib/cmake/_build/
 .idea/**
@@ -26,6 +28,7 @@ tensorflow/contrib/cmake/_build/
 /api_init_files_list.txt
 /estimator_api_init_files_list.txt
 *.whl
+/tflite_models/*
 
 # Android
 .gradle

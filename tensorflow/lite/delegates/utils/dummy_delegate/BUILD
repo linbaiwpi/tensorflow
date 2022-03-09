@@ -19,6 +19,9 @@ cc_library(
     deps = [
         "//tensorflow/lite/c:common",
         "//tensorflow/lite/delegates/utils:simple_delegate",
+        "//tensorflow/lite:builtin_ops",
+        "//tensorflow/lite/kernels:kernel_util",
+        "//tensorflow/lite/kernels/internal:tensor",
     ],
 )
 

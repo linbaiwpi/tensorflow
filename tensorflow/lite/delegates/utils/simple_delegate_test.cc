@@ -93,7 +93,7 @@ TEST_F(TestDelegate, NoNodesToDelegate) {
   options.allowed_builtin_code = kTfLiteBuiltinSub;
   auto delegate = TfLiteDummyDelegateCreateUnique(&options);
   interpreter_->ModifyGraphWithDelegate(std::move(delegate));
-
+  std::cout << "===> " << interpreter_->execution_plan().size() << std::endl;
   ASSERT_EQ(interpreter_->execution_plan().size(), 3);
 }
 
